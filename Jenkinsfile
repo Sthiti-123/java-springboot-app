@@ -17,5 +17,24 @@ pipeline {
                 echo "----------- build completed ----------"
             }
         }
+        stage("Test Stage"){
+            steps{
+                echo "----------- unit test started ----------"
+                sh 'mvn surefire-report:report'
+                echo "----------- unit test Completed ----------"
+            }
+        }
+        
+        stage('SonarQube Analysis') {
+            environment {
+                scannerHome = tool 'sonar-scanner'
+            }
+            steps{
+                withSonarQubeEnv('sonar-server') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
+        }
+  
     }
 }
